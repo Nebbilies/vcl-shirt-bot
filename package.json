@@ -1,0 +1,19 @@
+{
+  "name": "vcl-shirt-bot",
+  "version": "1.0.0",
+  "description": "A discord bot which helps ordering shirts easier.",
+  "main": "index.js",
+  "scripts": {
+    "test": "node index.js"
+  },
+  "author": "nebby",
+  "license": "ISC",
+  "dependencies": {
+    "discord.js": "^14.22.1",
+    "googleapis": "^160.0.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.36.0",
+    "eslint": "^9.36.0"
+  }
+}
