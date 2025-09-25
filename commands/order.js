@@ -24,23 +24,120 @@ module.exports = {
 
         const channel = await interaction.user.createDM();
         const answers = {};
-        await channel.send('>w< Trợ lý đặt áo của bạn đây nè~! Mình sẽ hỏi bạn một số thông tin để hoàn tất đơn đặt hàng nhé, Mwah~!');
+        await channel.send('>w< Trợ lý đặt áo của bạn đây nè~! Mình sẽ hỏi bạn một số thông tin để hoàn tất đơn đặt hàng nhé, Mwah~! (xam lon deo ban)');
         for (const q of questions) {
             await channel.send(q.question);
-            try {
-                const collected = await channel.awaitMessages({
-                    filter: m => m.author.id === interaction.user.id,
-                    max: 1,
-                    time: 60000,
-                });
-
-                answers[q.key] = collected.first().content;
-            }
-             catch (e) {
-                return await channel.send('⏰ TwT Mình đợi bạn hơi lâu quá, bạn có thể thử lại lệnh `/order` nhé!');
+            while (true) {
+                try {
+                    const collected = await channel.awaitMessages({
+                        filter: m => m.author.id === interaction.user.id,
+                        max: 1,
+                        // 1 minutes
+                        time: 60000,
+                        errors: ['time'],
+                    });
+                    const answer = collected.first().content.trim();
+                    if (q.key === 'size') {
+                        const validSizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
+                        if (!validSizes.includes(answer.toUpperCase())) {
+                            await channel.send('⚠️ Size không hợp lệ! (XS, S, M, L, XL, XXL).');
+                            continue;
+                        }
+                    }
+                    else if (q.key === 'color') {
+                        const validColors = ['đỏ', 'đen'];
+                        if (!validColors.includes(answer.toLowerCase())) {
+                            await channel.send('⚠️ Màu không hợp lệ!');
+                            continue;
+                        }
+                    }
+                    else if (q.key === 'phone') {
+                        const phoneRegex = /^[0-9]{10}$/;
+                        if (!phoneRegex.test(answer)) {
+                            await channel.send('⚠️ Số điện thoại không hợp lệ! Vui lòng nhập đúng 10 chữ số.');
+                            continue;
+                        }
+                    }
+                    answers[q.key] = answer;
+                    break;
+                }
+                catch (e) {
+                    console.error(e);
+                    await channel.send('⏰ Hết thời gian trả lời! Vui lòng bắt đầu lại quy trình đặt áo bằng lệnh /order.');
+                    return;
+                }
             }
         }
-        await channel.send('UwU~ Cảm ơn bạn đã đặt áo! Chúng mình đã ghi nhận thông tin của bạn rồi nhé!');
+        await channel.send({
+            "content": "# Xác nhận đơn hàng áo VNOC6\n\n",
+            "embeds": [
+            {
+                "title": "Thông tin ship",
+                "color": 8023235,
+                "fields": [
+                    {
+                        "name": "Tên người nhận",
+                        "value": answers.name,
+                        "inline": true,
+                    },
+                    {
+                        "name": "Số điện thoại",
+                        "value": answers.phone,
+                        "inline": true,
+                    },
+                    {
+                        "name": "Địa chỉ",
+                        "value": answers.address,
+                    },
+                ],
+            },
+            {
+                "title": "Thông tin đặt áo",
+                "fields": [
+                    {
+                        "name": "Size",
+                        "value": answers.size,
+                        "inline": true,
+                    },
+                    {
+                        "name": "Màu",
+                        "value": answers.color,
+                        "inline": true,
+                    },
+                    {
+                        "name": "Custom tên",
+                        "value": answers.nickname,
+                    },
+                    {
+                        "name": "Custom quote",
+                        "value": answers.quote,
+                    },
+                    {
+                        "name": "Bonus gacha sticker",
+                        "value": "5",
+                    },
+                ],
+            },
+            {
+                "title": "Trạng thái thanh toán",
+                "fields": [
+                    {
+                        "name": "Trạng thái",
+                        "value": "Đã thanh toán",
+                    },
+                    {
+                        "name": "Số tiền cần thanh toán",
+                        "value": "299.000 VND",
+                    },
+                ],
+                "color": 3066993,
+                "footer": {
+                    "text": "dùng lệnh /qr để hiển thị mã QR nhận thanh toán áo!",
+                },
+            },
+        ],
+            "attachments": [],
+        });
 
         const rows = await getSpreadsheetData(SHEET_NAME);
         console.log(rows);
@@ -51,6 +148,7 @@ module.exports = {
         }
         const newRow = [
             (lastId + 1).toString(),
+            interaction.user.username,
             interaction.user.id,
             answers.name,
             answers.size.toUpperCase(),
