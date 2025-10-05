@@ -1,6 +1,7 @@
 const { SlashCommandBuilder } = require('discord.js');
 require('../../auth.js');
 const SHEET_NAME = 'shirt';
+const adminConfig = require('../admins-config.json');
 const { getSpreadsheetData } = require('./../modules/spreadsheetFunctions.js');
 // hardcode af
 const ORDERID_COLUMN = 0;
@@ -35,6 +36,9 @@ module.exports = {
                             .setAutocomplete(true)),
         ),
     async autocomplete(interaction) {
+        if (adminConfig.admins.includes(interaction.user.id) === false) {
+            return interaction.respond([]);
+        }
         const subcommand = interaction.options.getSubcommand();
         const raw_rows = await getSpreadsheetData(SHEET_NAME);
         // Remove header
@@ -55,6 +59,12 @@ module.exports = {
     },
     async execute(interaction) {
         await interaction.deferReply();
+        if (adminConfig.admins.includes(interaction.user.id) === false) {
+            return interaction.editReply({
+                content: ':x: Bạn không có quyền doxxing (ーー゛).',
+                ephemeral: true,
+            });
+        }
         const subcommand = interaction.options.getSubcommand();
         const rows = await getSpreadsheetData(SHEET_NAME);
         let orderRow;
@@ -88,6 +98,7 @@ module.exports = {
                 nickname: orderRow[start + 5],
                 status: orderRow[start + 7],
                 quote: orderRow[start + 6],
+                price: orderRow[start + 9],
             };
             return interaction.editReply({
                 "content": "# Đơn hàng áo VNOC6\n\n",
@@ -135,7 +146,7 @@ module.exports = {
                             },
                             {
                                 "name": "Bonus gacha sticker",
-                                "value": "5",
+                                "value": "pending",
                             },
                         ],
                     },
@@ -148,7 +159,7 @@ module.exports = {
                             },
                             {
                                 "name": "Số tiền cần thanh toán",
-                                "value": "299.000 VND",
+                                "value": answers.price + " VND",
                             },
                         ],
                         "color": answers.status === 'FALSE' ? 15548997 : 65280,

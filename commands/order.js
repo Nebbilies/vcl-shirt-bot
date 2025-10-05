@@ -12,18 +12,20 @@ module.exports = {
             content: '📬 Mình đã gửi bạn một tin nhắn riêng, hãy trả lời mình ở đó nhé~!',
             ephemeral: true,
         });
+        const answers = {};
         const questions = [
             { key: 'name', question: '👤**Tên dầy đủ** của bạn là gì?' },
-            { key: 'size', question: '📏 **Size** áo bạn muốn? (XS, S, M, L, XL, XXL)' },
+            { key: 'color', question: '🎨 Bạn chọn màu **đỏ** hay **đen** hay **trắng**? \n (**Disclaimer**: Áo đỏ không có size XXL, XXXL, **+ 20K**, và sẽ là **gacha**, nếu không trúng thì bạn sẽ **được chọn 1 trong 2 màu còn lại**) \n' +
+                    'https://s.hoaq.works/0ytJEpLnDa.jpg\n' +
+                    'https://s.hoaq.works/IJIEKTrTHg.jpg\n' +
+                    'https://s.hoaq.works/EcpLt9jbN8.jpg' },
+            { key: 'size', question: `📏 **Size** áo bạn muốn? (M, L, XL, XXL, XXXL) \n (**Lưu ý**: Áo đỏ không có size XXL, XXXL)` },
             { key: 'address', question: '🏠 **Địa chỉ** nhận áo của bạn là gì?' },
             { key: 'phone', question: '📞 **Số điện thoại** của bạn là gì?' },
-            { key: 'color', question: '🎨 Bạn chọn màu **đỏ** hay **đen**?' },
             { key: 'nickname', question: '🏷️ **Nickname** bạn muốn in trên áo là gì?' },
-            { key: 'quote', question: '💬 **Quote** bạn muốn in trên áo là gì? (Nhắn "skip" nếu không có)' },
+            { key: 'quote', question: '💬 **Quote** bạn muốn in trên áo là gì? **(+ 20K)** (Nhắn "skip" nếu không có)' },
         ];
-
         const channel = await interaction.user.createDM();
-        const answers = {};
         await channel.send('>w< Trợ lý đặt áo của bạn đây nè~! Mình sẽ hỏi bạn một số thông tin để hoàn tất đơn đặt hàng nhé, Mwah~! (xam lon deo ban)');
         for (const q of questions) {
             await channel.send(q.question);
@@ -36,16 +38,27 @@ module.exports = {
                         time: 60000,
                         errors: ['time'],
                     });
-                    const answer = collected.first().content.trim();
+                    let answer = collected.first().content.trim();
                     if (q.key === 'size') {
-                        const validSizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
+                        const validSizes = answers.color === 'đỏ' ? ['M', 'L', 'XL'] : ['M', 'L', 'XL', 'XXL', 'XXXL'];
                         if (!validSizes.includes(answer.toUpperCase())) {
-                            await channel.send('⚠️ Size không hợp lệ! (XS, S, M, L, XL, XXL).');
+                            await channel.send(`⚠️ Size không hợp lệ! (M, L, XL${answers.color === 'đỏ' ? '' : ', XXL, XXXL'}).`);
                             continue;
                         }
                     }
                     else if (q.key === 'color') {
-                        const validColors = ['đỏ', 'đen'];
+                        const validColors = ['đỏ', 'đen', 'trắng'];
+                        switch (answer.toLowerCase()) {
+                            case 'do':
+                                answer = 'đỏ';
+                                break;
+                            case 'den':
+                                answer = 'đen';
+                                break;
+                            case 'trang':
+                                answer = 'trắng';
+                                break;
+                        }
                         if (!validColors.includes(answer.toLowerCase())) {
                             await channel.send('⚠️ Màu không hợp lệ!');
                             continue;
@@ -68,6 +81,19 @@ module.exports = {
                 }
             }
         }
+        const rows = await getSpreadsheetData(SHEET_NAME);
+        // edge case: undefined if no data, hence no rows.length
+        let lastId = 0;
+        if (/^\d+$/.test(rows[rows.length - 1][0]) === true) {
+            lastId = parseInt(rows[rows.length - 1][0]);
+        }
+        let price = 219000;
+        if (answers.color === 'đỏ') {
+            price += 20000;
+        }
+        if (answers.quote.toLowerCase() !== 'skip') {
+            price += 20000;
+        }
         await channel.send({
             "content": "# Xác nhận đơn hàng áo VNOC6\n\n",
             "embeds": [
@@ -75,6 +101,11 @@ module.exports = {
                 "title": "Thông tin ship",
                 "color": 8023235,
                 "fields": [
+                    {
+                        "name": "Order ID",
+                        "value": (lastId + 1).toString(),
+                        "inline": true,
+                    },
                     {
                         "name": "Tên người nhận",
                         "value": answers.name,
@@ -114,7 +145,7 @@ module.exports = {
                     },
                     {
                         "name": "Bonus gacha sticker",
-                        "value": "5",
+                        "value": "pending",
                     },
                 ],
             },
@@ -127,7 +158,7 @@ module.exports = {
                     },
                     {
                         "name": "Số tiền cần thanh toán",
-                        "value": "299.000 VND",
+                        "value": price + " VND",
                     },
                 ],
                 "color": 15548997,
@@ -138,14 +169,6 @@ module.exports = {
         ],
             "attachments": [],
         });
-
-        const rows = await getSpreadsheetData(SHEET_NAME);
-        console.log(rows);
-        // edge case: undefined if no data, hence no rows.length
-        let lastId = 0;
-        if (/^\d+$/.test(rows[rows.length - 1][0]) === true) {
-            lastId = parseInt(rows[rows.length - 1][0]);
-        }
         const newRow = [
             (lastId + 1).toString(),
             interaction.user.username,
@@ -159,6 +182,7 @@ module.exports = {
             answers.quote.toLowerCase() === 'skip' ? '' : answers.quote,
             false,
             new Date().toLocaleString('en-US', { timeZone: 'Asia/Ho_Chi_Minh' }),
+            price,
         ];
         const range = `'${SHEET_NAME}'!A${rows.length + 1}`;
         await updateSpreadsheetData(range, [newRow]);
