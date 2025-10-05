@@ -123,14 +123,14 @@ module.exports = {
                 "fields": [
                     {
                         "name": "Trạng thái",
-                        "value": "Đã thanh toán",
+                        "value": `:x: Chưa thanh toán`,
                     },
                     {
                         "name": "Số tiền cần thanh toán",
                         "value": "299.000 VND",
                     },
                 ],
-                "color": 3066993,
+                "color": 15548997,
                 "footer": {
                     "text": "dùng lệnh /qr để hiển thị mã QR nhận thanh toán áo!",
                 },
@@ -157,6 +157,7 @@ module.exports = {
             answers.color,
             answers.nickname,
             answers.quote.toLowerCase() === 'skip' ? '' : answers.quote,
+            false,
             new Date().toLocaleString('en-US', { timeZone: 'Asia/Ho_Chi_Minh' }),
         ];
         const range = `'${SHEET_NAME}'!A${rows.length + 1}`;

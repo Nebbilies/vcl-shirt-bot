@@ -86,6 +86,7 @@ module.exports = {
                 size: orderRow[start + 1],
                 color: orderRow[start + 4],
                 nickname: orderRow[start + 5],
+                status: orderRow[start + 7],
                 quote: orderRow[start + 6],
             };
             return interaction.editReply({
@@ -143,14 +144,14 @@ module.exports = {
                         "fields": [
                             {
                                 "name": "Trạng thái",
-                                "value": "Đã thanh toán",
+                                "value": `${answers.status === 'FALSE' ? ':x: Chưa thanh toán' : ':white_check_mark: Đã thanh toán'}`,
                             },
                             {
                                 "name": "Số tiền cần thanh toán",
                                 "value": "299.000 VND",
                             },
                         ],
-                        "color": 3066993,
+                        "color": answers.status === 'FALSE' ? 15548997 : 65280,
                         "footer": {
                             "text": "dùng lệnh /qr để hiển thị mã QR nhận thanh toán áo!",
                         },
