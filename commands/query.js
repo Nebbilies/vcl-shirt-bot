@@ -1,5 +1,4 @@
 const { SlashCommandBuilder } = require('discord.js');
-require('../../auth.js');
 const SHEET_NAME = 'shirt';
 const serverConfig = require('../server-config.json');
 const { getSpreadsheetData } = require('./../modules/spreadsheetFunctions.js');
