@@ -91,6 +91,13 @@ module.exports = {
                             continue;
                         }
                     }
+                    else if (q.key === 'customFont') {
+                        const urlRegex = /^(https?:\/\/[^\s]+)$/;
+                        if (answer.toLowerCase() !== 'skip' && !urlRegex.test(answer)) {
+                            await channel.send('⚠️ Link không hợp lệ! Vui lòng nhập đúng định dạng URL hoặc nhắn "skip".');
+                            continue;
+                        }
+                    }
                     answers[q.key] = answer;
                     break;
                 }
@@ -123,17 +130,12 @@ module.exports = {
         }
         console.log(answers);
         await channel.send({
-            "content": "# Xác nhận đơn hàng áo VNOC6\n\n",
+            "content": `# Xác nhận đơn hàng áo VNOC6\n Order ID: ${lastId + 1}\n\n`,
             "embeds": [
             {
                 "title": "Thông tin ship",
                 "color": 8023235,
                 "fields": [
-                    {
-                        "name": "Order ID",
-                        "value": (lastId + 1).toString(),
-                        "inline": true,
-                    },
                     {
                         "name": "Tên người nhận",
                         "value": answers.name,
@@ -186,7 +188,7 @@ module.exports = {
                     },
                     {
                         "name": "Số tiền cần thanh toán",
-                        "value": price + " VND",
+                        "value": price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " VND",
                     },
                 ],
                 "color": 15548997,

@@ -101,7 +101,7 @@ module.exports = {
                 price: orderRow[start + 9],
             };
             return interaction.editReply({
-                "content": "# Đơn hàng áo VNOC6\n\n",
+                "content": `# Đơn hàng áo VNOC6\n\n Order ID: ${orderRow[0]}\n\n`,
                 "embeds": [
                     {
                         "title": "Thông tin ship",
@@ -159,7 +159,7 @@ module.exports = {
                             },
                             {
                                 "name": "Số tiền cần thanh toán",
-                                "value": answers.price + " VND",
+                                "value": answers.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " VND",
                             },
                         ],
                         "color": answers.status === 'FALSE' ? 15548997 : 65280,
