@@ -116,10 +116,10 @@ module.exports = {
                 price += 20000;
             }
         }
-        if (isDonator) {
-            price = Math.round(price * 0.95 / 1000) * 1000;
-        } else if (isSponsor) {
+        if (isSponsor) {
             price = Math.round(price * 0.85 / 1000) * 1000;
+        } else if (isDonator) {
+            price = Math.round(price * 0.95 / 1000) * 1000;
         }
         console.log(answers);
         await channel.send({
