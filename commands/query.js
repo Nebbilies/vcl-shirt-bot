@@ -144,10 +144,6 @@ module.exports = {
                                 "name": "Custom quote",
                                 "value": answers.quote,
                             },
-                            {
-                                "name": "Bonus gacha sticker",
-                                "value": "pending",
-                            },
                         ],
                     },
                     {
