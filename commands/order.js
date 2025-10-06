@@ -1,16 +1,27 @@
 const { SlashCommandBuilder } = require('discord.js');
-const SHEET_NAME = 'shirt';
 const { getSpreadsheetData, updateSpreadsheetData } = require('./../modules/spreadsheetFunctions.js');
+const serverConfig = require('../server-config.json');
+
+const SHEET_NAME = 'shirt';
+const CUSTOM_FONT_DEFAULT = 'Montserrat - Italic';
 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('order')
         .setDescription('Order a shirt'),
     execute: async (interaction) => {
+        if (interaction.channel.type !== 0) {
+            return interaction.reply({
+                content: '⚠️ Vui lòng sử dụng lệnh trong server!',
+                ephemeral: true,
+            });
+        }
         await interaction.reply({
             content: '📬 Mình đã gửi bạn một tin nhắn riêng, hãy trả lời mình ở đó nhé~!',
             ephemeral: true,
         });
+        // check if user has staff role
+        const isStaff = serverConfig.staffRoles.some(roleId => interaction.member.roles.cache.has(roleId));
         const answers = {};
         const questions = [
             { key: 'name', question: '👤**Tên dầy đủ** của bạn là gì?' },
@@ -22,15 +33,16 @@ module.exports = {
             { key: 'address', question: '🏠 **Địa chỉ** nhận áo của bạn là gì?' },
             { key: 'phone', question: '📞 **Số điện thoại** của bạn là gì?' },
             { key: 'nickname', question: '🏷️ **Nickname** bạn muốn in trên áo là gì?' },
-            { key: 'quote', question: '💬 **Quote** bạn muốn in trên áo là gì? **(+ 20K)** (Nhắn "skip" nếu không có)' },
-            { key: 'customFont', question: '✍️ **Custom font** bạn muốn cho quote? (Link đến font)' },
+            { key: 'quote', question: '💬 **Quote** bạn muốn in trên áo là gì? **(+ 20K, Staff miễn phí)** (Nhắn "skip" nếu không có)' },
+            { key: 'customFont', question: '✍️ **Custom font** bạn muốn cho quote? (Link đến font, nhắn "skip" để dùng **' +
+                    `${CUSTOM_FONT_DEFAULT}**)` },
         ];
         const channel = await interaction.user.createDM();
         await channel.send('>w< Trợ lý đặt áo của bạn đây nè~! Mình sẽ hỏi bạn một số thông tin để hoàn tất đơn đặt hàng nhé, Mwah~! (xam lon deo ban)');
         for (const q of questions) {
             if (q.key === 'customFont') {
                 if (answers.quote.toLowerCase() === 'skip') {
-                    answers[q.key] = '';
+                    answers[q.key] = 'skip';
                     continue;
                 }
             }
@@ -93,13 +105,16 @@ module.exports = {
         if (/^\d+$/.test(rows[rows.length - 1][0]) === true) {
             lastId = parseInt(rows[rows.length - 1][0]);
         }
-        let price = 219000;
+        let price = isStaff ? 199000 : 219000;
         if (answers.color === 'đỏ') {
             price += 20000;
         }
         if (answers.quote.toLowerCase() !== 'skip') {
-            price += 20000;
+            if (isStaff === false) {
+                price += 20000;
+            }
         }
+        console.log(answers);
         await channel.send({
             "content": "# Xác nhận đơn hàng áo VNOC6\n\n",
             "embeds": [
@@ -189,7 +204,7 @@ module.exports = {
             false,
             new Date().toLocaleString('en-US', { timeZone: 'Asia/Ho_Chi_Minh' }),
             price,
-            answers.customFont,
+            answers.customFont === 'skip' ? CUSTOM_FONT_DEFAULT : '',
         ];
         const range = `'${SHEET_NAME}'!A${rows.length + 1}`;
         await updateSpreadsheetData(range, [newRow]);
