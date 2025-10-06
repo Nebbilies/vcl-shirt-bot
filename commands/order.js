@@ -1,5 +1,4 @@
 const { SlashCommandBuilder } = require('discord.js');
-require('../../auth.js');
 const SHEET_NAME = 'shirt';
 const { getSpreadsheetData, updateSpreadsheetData } = require('./../modules/spreadsheetFunctions.js');
 
@@ -24,10 +23,17 @@ module.exports = {
             { key: 'phone', question: '📞 **Số điện thoại** của bạn là gì?' },
             { key: 'nickname', question: '🏷️ **Nickname** bạn muốn in trên áo là gì?' },
             { key: 'quote', question: '💬 **Quote** bạn muốn in trên áo là gì? **(+ 20K)** (Nhắn "skip" nếu không có)' },
+            { key: 'customFont', question: '✍️ **Custom font** bạn muốn cho quote? (Link đến font)' },
         ];
         const channel = await interaction.user.createDM();
         await channel.send('>w< Trợ lý đặt áo của bạn đây nè~! Mình sẽ hỏi bạn một số thông tin để hoàn tất đơn đặt hàng nhé, Mwah~! (xam lon deo ban)');
         for (const q of questions) {
+            if (q.key === 'customFont') {
+                if (answers.quote.toLowerCase() === 'skip') {
+                    answers[q.key] = '';
+                    continue;
+                }
+            }
             await channel.send(q.question);
             while (true) {
                 try {
@@ -183,6 +189,7 @@ module.exports = {
             false,
             new Date().toLocaleString('en-US', { timeZone: 'Asia/Ho_Chi_Minh' }),
             price,
+            answers.customFont,
         ];
         const range = `'${SHEET_NAME}'!A${rows.length + 1}`;
         await updateSpreadsheetData(range, [newRow]);
