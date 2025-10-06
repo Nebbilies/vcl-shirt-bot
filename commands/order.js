@@ -22,6 +22,8 @@ module.exports = {
         });
         // check if user has staff role
         const isStaff = serverConfig.staffRoles.some(roleId => interaction.member.roles.cache.has(roleId));
+        const isSponsor = serverConfig.sponsorRoles.some(roleId => interaction.member.roles.cache.has(roleId));
+        const isDonator = serverConfig.donatorRoles.some(roleId => interaction.member.roles.cache.has(roleId));
         const answers = {};
         const questions = [
             { key: 'name', question: '👤**Tên dầy đủ** của bạn là gì?' },
@@ -110,9 +112,14 @@ module.exports = {
             price += 20000;
         }
         if (answers.quote.toLowerCase() !== 'skip') {
-            if (isStaff === false) {
+            if (isStaff === false && isSponsor === false && isDonator === false) {
                 price += 20000;
             }
+        }
+        if (isDonator) {
+            price = Math.round(price * 0.95 / 1000) * 1000;
+        } else if (isSponsor) {
+            price = Math.round(price * 0.85 / 1000) * 1000;
         }
         console.log(answers);
         await channel.send({
@@ -170,7 +177,7 @@ module.exports = {
                     },
                 ],
             },
-            {
+             {
                 "title": "Trạng thái thanh toán",
                 "fields": [
                     {
@@ -204,7 +211,9 @@ module.exports = {
             false,
             new Date().toLocaleString('en-US', { timeZone: 'Asia/Ho_Chi_Minh' }),
             price,
-            answers.customFont === 'skip' ? CUSTOM_FONT_DEFAULT : '',
+            answers.customFont === 'skip' ? CUSTOM_FONT_DEFAULT : answers.customFont,
+            // last updated
+            new Date().toLocaleString('en-US', { timeZone: 'Asia/Ho_Chi_Minh' }),
         ];
         const range = `'${SHEET_NAME}'!A${rows.length + 1}`;
         await updateSpreadsheetData(range, [newRow]);
