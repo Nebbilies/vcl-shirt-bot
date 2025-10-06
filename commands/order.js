@@ -208,7 +208,7 @@ module.exports = {
             answers.color,
             answers.nickname,
             answers.quote.toLowerCase() === 'skip' ? '' : answers.quote,
-            false,
+            'FALSE',
             new Date().toLocaleString('en-US', { timeZone: 'Asia/Ho_Chi_Minh' }),
             price,
             answers.customFont === 'skip' ? CUSTOM_FONT_DEFAULT : answers.customFont,

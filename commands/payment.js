@@ -65,7 +65,7 @@ module.exports = {
         const range = `${SHEET_NAME}!${indexToColumn(PAYMENT_STATUS_COLUMN)}${rows.indexOf(orderRow) + 1}`;
         const ordererId = orderRow[USERID_COLUMN];
         try {
-            await updateSpreadsheetData(range, [[status]]);
+            await updateSpreadsheetData(range, [[status ? 'TRUE' : 'FALSE']]);
             const user = await interaction.client.users.fetch(ordererId);
             const embed = new EmbedBuilder()
                 .setColor(status ? 3066993 : 15548997)
