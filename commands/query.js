@@ -1,7 +1,7 @@
 const { SlashCommandBuilder } = require('discord.js');
 require('../../auth.js');
 const SHEET_NAME = 'shirt';
-const adminConfig = require('../admins-config.json');
+const serverConfig = require('../server-config.json');
 const { getSpreadsheetData } = require('./../modules/spreadsheetFunctions.js');
 // hardcode af
 const ORDERID_COLUMN = 0;
@@ -36,7 +36,7 @@ module.exports = {
                             .setAutocomplete(true)),
         ),
     async autocomplete(interaction) {
-        if (adminConfig.admins.includes(interaction.user.id) === false) {
+        if (serverConfig.admins.includes(interaction.user.id) === false) {
             return interaction.respond([]);
         }
         const subcommand = interaction.options.getSubcommand();
@@ -59,7 +59,7 @@ module.exports = {
     },
     async execute(interaction) {
         await interaction.deferReply();
-        if (adminConfig.admins.includes(interaction.user.id) === false) {
+        if (serverConfig.admins.includes(interaction.user.id) === false) {
             return interaction.editReply({
                 content: ':x: Bạn không có quyền doxxing (ーー゛).',
                 ephemeral: true,

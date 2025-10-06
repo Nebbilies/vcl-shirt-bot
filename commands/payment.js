@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
-const adminConfig = require("../admins-config.json");
+const serverConfig = require("../server-config.json");
 const { getSpreadsheetData, updateSpreadsheetData } = require('./../modules/spreadsheetFunctions.js');
 const { indexToColumn } = require('./../modules/indexToColumn.js');
 
@@ -32,7 +32,7 @@ module.exports = {
                 ),
         ),
     async autocomplete(interaction) {
-        if (adminConfig.admins.includes(interaction.user.id) === false) {
+        if (serverConfig.admins.includes(interaction.user.id) === false) {
             return interaction.respond([]);
         }
         const rows = await getSpreadsheetData(SHEET_NAME);
@@ -46,7 +46,7 @@ module.exports = {
     },
     async execute(interaction) {
         await interaction.deferReply();
-        if (adminConfig.admins.includes(interaction.user.id) === false) {
+        if (serverConfig.admins.includes(interaction.user.id) === false) {
             return interaction.editReply({
                 content: ':x: Bạn không có quyền doxxing (ーー゛).',
                 ephemeral: true,
