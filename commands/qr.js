@@ -12,7 +12,8 @@ module.exports = {
         });
         const channel = await interaction.user.createDM();
         await channel.send({
-            content: 'QR để bạn chuyển khoản thanh toán nè~! Cảm ơn bạn đã ủng hộ VCL <3',
+            content: 'QR để bạn chuyển khoản thanh toán nè~! Cảm ơn bạn đã ủng hộ VCL <3' +
+                '\n **NỘI DUNG CHUYỂN KHOẢN** theo format: `VNOC6 SHIRT - [Họ tên]`',
             files: [qrImagePath],
         });
     },
