@@ -76,7 +76,8 @@ module.exports = {
                     }
                     else if (q.key === 'color') {
                         const validColors = ['đỏ', 'đen', 'trắng'];
-                        switch (answer.toLowerCase()) {
+                        answer = answer.toLowerCase();
+                        switch (answer) {
                             case 'do':
                                 answer = 'đỏ';
                                 break;
@@ -87,7 +88,7 @@ module.exports = {
                                 answer = 'trắng';
                                 break;
                         }
-                        if (!validColors.includes(answer.toLowerCase())) {
+                        if (!validColors.includes(answer)) {
                             await channel.send('⚠️ Màu không hợp lệ!');
                             continue;
                         }
@@ -96,6 +97,18 @@ module.exports = {
                         const phoneRegex = /^[0-9]{10}$/;
                         if (!phoneRegex.test(answer)) {
                             await channel.send('⚠️ Số điện thoại không hợp lệ! Vui lòng nhập đúng 10 chữ số.');
+                            continue;
+                        }
+                    }
+                    else if (q.key === 'nickname') {
+                        if (answer.length > 12) {
+                            await channel.send('⚠️ Vui lòng nhập nickname từ 12 ký tự trở xuống.');
+                            continue;
+                        }
+                    }
+                    else if (q.key === 'quote') {
+                        if (answer.toLowerCase() !== 'skip' && answer.length > 32) {
+                            await channel.send('⚠️ Vui lòng nhập quote từ 32 ký tự trở xuống.');
                             continue;
                         }
                     }

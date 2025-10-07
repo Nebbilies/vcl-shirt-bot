@@ -73,7 +73,7 @@ module.exports = {
                 .setFields(
                     {
                         name: "Mã đơn hàng",
-                        value: "1",
+                        value: `${orderId}`,
                         inline: false,
                     },
                     {
@@ -83,7 +83,7 @@ module.exports = {
                     },
                 );
             await user.send({
-                content: `Đơn hàng **\`${orderId}\`** của bạn đã được cập nhật trạng thái thanh toán thành **\`${status ? 'Đã thanh toán' : 'Chưa thanh toán'}\`** :3`,
+                content: `Đơn hàng **\`${orderId}\`** của bạn đã được cập nhật trạng thái thanh toán thành **\`${status ? 'Đã thanh toán' : 'Chưa thanh toán'}\`** :3 \n **Lưu ý**: Số tiền thanh toán chưa bao gồm chi phí vận chuyển.`,
                 embeds: [embed],
             });
             return interaction.editReply({

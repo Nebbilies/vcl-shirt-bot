@@ -149,7 +149,17 @@ module.exports = {
                             continue;
                         }
                     }
+                    else if (q.key === 'nickname') {
+                        if (answer.length > 12) {
+                            await channel.send('⚠️ Vui lòng nhập nickname từ 12 ký tự trở xuống.');
+                            continue;
+                        }
+                    }
                     else if (q.key === 'quote') {
+                        if (answer.length > 32 && answer.toLowerCase() !== 'skip') {
+                            await channel.send('⚠️ Vui lòng nhập quote từ 32 ký tự trở xuống.');
+                            continue;
+                        }
                         if (answer.status === 'TRUE' && answers.quote.toLowerCase() === 'skip') {
                             await channel.send('⚠️ Bạn đã thanh toán không in quote, vui lòng contact hoaq để in quote!');
                             // no options
