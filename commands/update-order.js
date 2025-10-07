@@ -150,14 +150,14 @@ module.exports = {
                         }
                     }
                     else if (q.key === 'nickname') {
-                        if (answer.length > 12) {
-                            await channel.send('⚠️ Vui lòng nhập nickname từ 12 ký tự trở xuống.');
+                        if (answer.length > 18) {
+                            await channel.send('⚠️ Vui lòng nhập nickname từ 18 ký tự trở xuống.');
                             continue;
                         }
                     }
                     else if (q.key === 'quote') {
-                        if (answer.length > 32 && answer.toLowerCase() !== 'skip') {
-                            await channel.send('⚠️ Vui lòng nhập quote từ 32 ký tự trở xuống.');
+                        if (answer.length > 36 && answer.toLowerCase() !== 'skip') {
+                            await channel.send('⚠️ Vui lòng nhập quote từ 36 ký tự trở xuống.');
                             continue;
                         }
                         if (answer.status === 'TRUE' && answers.quote.toLowerCase() === 'skip') {
