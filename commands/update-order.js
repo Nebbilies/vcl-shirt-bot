@@ -66,7 +66,7 @@ module.exports = {
             color: orderRow[FULLNAME_COLUMN + 4],
             nickname: orderRow[FULLNAME_COLUMN + 5],
             quote: orderRow[FULLNAME_COLUMN + 6] === '' ? 'skip' : orderRow[FULLNAME_COLUMN + 6],
-            customFont: orderRow[FULLNAME_COLUMN + 9] === '' ? 'skip' : orderRow[FULLNAME_COLUMN + 9],
+            customFont: orderRow[FULLNAME_COLUMN + 10] === '' ? 'skip' : orderRow[FULLNAME_COLUMN + 10],
             status: orderRow[FULLNAME_COLUMN + 7],
             date: orderRow[FULLNAME_COLUMN + 8],
         };
