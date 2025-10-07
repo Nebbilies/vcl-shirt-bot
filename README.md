@@ -9,7 +9,8 @@ Makes ordering shirts easier, for Vietnam Community League Tournaments &amp; rel
 2. Navigate to the project directory
 3. Install Dependencies
 4. Setup server-config, config, and service-account files
-5. Run the bot:
+5. Add header row to your Sheets first (else bot will crash)
+6. Run the bot:
    ```bash
    node index.js
    ```

@@ -113,6 +113,8 @@ module.exports = {
         let lastId = 0;
         if (/^\d+$/.test(rows[rows.length - 1][0]) === true) {
             lastId = parseInt(rows[rows.length - 1][0]);
+        } else {
+            lastId = 0;
         }
         let price = isStaff ? 199000 : 219000;
         if (answers.color === 'đỏ') {
