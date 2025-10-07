@@ -215,5 +215,10 @@ module.exports = {
         ];
         const range = `'${SHEET_NAME}'!A${rows.length + 1}`;
         await updateSpreadsheetData(range, [newRow]);
+        for (const role of serverConfig.buyerRoles) {
+            if (interaction.member.roles.cache.has(role) === false) {
+                await interaction.member.roles.add(role);
+            }
+        }
     },
 };
