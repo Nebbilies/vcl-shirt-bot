@@ -2,5 +2,7 @@
   "admins": [],
   "staffRoles": [],
   "sponsorRoles": [],
-  "donatorRoles": []
+  "donatorRoles": [],
+    "buyerRoles": [],
+  "orderLogChannel": ""
 }

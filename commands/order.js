@@ -222,5 +222,27 @@ module.exports = {
                 await interaction.member.roles.add(role);
             }
         }
+        const logChannel = interaction.guild.channels.cache.get(serverConfig.orderLogChannel);
+        if (logChannel) {
+            logChannel.send({
+                "content": "Đơn hàng mới!",
+                "embeds": [
+                {
+                    "color": null,
+                    "fields": [
+                        {
+                            "name": "User",
+                            "value": `<@${interaction.user.id}>`,
+                        },
+                        {
+                            "name": "Order ID",
+                            "value": (lastId + 1).toString(),
+                        },
+                    ],
+                },
+            ],
+                "attachments": [],
+            });
+        }
     },
 };
