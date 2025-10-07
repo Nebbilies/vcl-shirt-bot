@@ -31,7 +31,7 @@ module.exports = {
     execute: async (interaction) => {
         if (interaction.channel.type !== 0) {
             return interaction.reply({
-                content: '⚠️ Vui lòng sử dụng lệnh trong server!',
+                content: '⚠️ Vui lòng sử dụng lệnh trong text channel của server!',
                 ephemeral: true,
             });
         }
@@ -77,7 +77,7 @@ module.exports = {
                     'https://s.hoaq.works/IJIEKTrTHg.jpg\n' +
                     'https://s.hoaq.works/EcpLt9jbN8.jpg' },
             { key: 'size', question: `📏 **Size** áo bạn muốn? (M, L, XL, XXL, XXXL) \n (**Lưu ý**: Áo đỏ không có size XXL, XXXL)` },
-            { key: 'address', question: '🏠 **Địa chỉ** nhận áo của bạn là gì?' },
+            { key: 'address', question: '🏠 **Địa chỉ** nhận áo của bạn là gì? (**Lưu ý**: sử dụng địa chỉ cũ, trước sát nhập)' },
             { key: 'phone', question: '📞 **Số điện thoại** của bạn là gì?' },
             { key: 'nickname', question: '🏷️ **Nickname** bạn muốn in trên áo là gì?' },
             { key: 'quote', question: '💬 **Quote** bạn muốn in trên áo là gì? **(+ 20K, Staff miễn phí)** (Nhắn "skip" nếu không có)' },
