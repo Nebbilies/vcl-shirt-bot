@@ -71,7 +71,7 @@ module.exports = {
             date: orderRow[FULLNAME_COLUMN + 8],
         };
         const questions = [
-            { key: 'name', question: '👤**Tên đầy đủ** của bạn là gì?' },
+            { key: 'name', question: '👤**Tên người nhận áo** là gì? (Sử dụng cho mục đích ship áo)' },
             { key: 'color', question: '🎨 Bạn chọn màu **đỏ** hay **đen** hay **trắng**? \n (**Disclaimer**: Áo đỏ không có size XXL, XXXL, **+ 20K**, và sẽ là **gacha**, nếu không trúng thì bạn sẽ **được chọn 1 trong 2 màu còn lại**) \n' +
                     'https://s.hoaq.works/0ytJEpLnDa.jpg\n' +
                     'https://s.hoaq.works/IJIEKTrTHg.jpg\n' +
@@ -99,8 +99,8 @@ module.exports = {
                     const collected = await channel.awaitMessages({
                         filter: m => m.author.id === interaction.user.id,
                         max: 1,
-                        // 1 minutes
-                        time: 60000,
+                        // 2 minutes
+                        time: 120000,
                         errors: ['time'],
                     });
                     let answer = collected.first().content.trim();
