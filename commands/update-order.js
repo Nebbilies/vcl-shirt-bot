@@ -85,6 +85,32 @@ module.exports = {
                     `${CUSTOM_FONT_DEFAULT}**)` },
         ];
         const channel = await interaction.user.createDM();
+        // only allow changing address now
+        await channel.send('>w< Trợ lý đặt áo của bạn đây nè~! Hiện tại chỉ cho phép cập nhật **địa chỉ nhận áo** thôi nhé (´・ω・)!\n');
+        await channel.send(questions[3].question + ` (Hiện tại: **${answers.address}**)`);
+        while (true) {
+            try {
+                const collected = await channel.awaitMessages({
+                    filter: m => m.author.id === interaction.user.id,
+                    max: 1,
+                    // 2 minutes
+                    time: 120000,
+                    errors: ['time'],
+                });
+                const answer = collected.first().content.trim();
+                if (answer.toLowerCase() === 'pass') {
+                    break;
+                }
+                answers['address'] = answer;
+                break;
+            }
+            catch (e) {
+                console.error(e);
+                await channel.send('⏰ Hết thời gian trả lời! Vui lòng bắt đầu lại quy trình.');
+                return;
+            }
+        }
+        /*
         await channel.send('>w< Trợ lý đặt áo của bạn đây nè~! Nhập thông tin mới ở chỗ bạn muốn cập nhật hoặc nhắn **"pass"** để giữ nguyên thông tin cũ nhé (´・ω・)!');
         for (const q of questions) {
             if (q.key === 'customFont') {
@@ -183,6 +209,7 @@ module.exports = {
                 }
             }
         }
+        */
         let price = isStaff ? 199000 : 219000;
         if (answers.color === 'đỏ') {
             price += 20000;
